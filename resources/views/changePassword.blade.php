@@ -64,7 +64,7 @@
 <body>
     <main class="card">
         <h1>Change Password</h1>
-        <p>First-time login requires a password change before access to the student page is granted.</p>
+        <p>First-time login requires a password change before full access is granted.</p>
 
         @if ($errors->any())
             <div class="errors">

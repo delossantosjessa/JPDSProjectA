@@ -7,13 +7,24 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
     public function test_the_application_returns_a_successful_response(): void
     {
         $response = $this->get('/');
 
         $response->assertStatus(200);
+    }
+
+    public function test_dashboard_requires_an_authenticated_session(): void
+    {
+        $response = $this->get('/dashboard');
+
+        $response->assertRedirect('/');
+    }
+
+    public function test_change_password_requires_an_authenticated_session(): void
+    {
+        $response = $this->get('/change-password?user=1');
+
+        $response->assertRedirect('/');
     }
 }

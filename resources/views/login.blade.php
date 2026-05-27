@@ -173,6 +173,10 @@
                 <div class="message message-error">{{ $errors->first('login') }}</div>
             @endif
 
+            @if (!empty($message))
+                <div class="message message-error">{{ $message }}</div>
+            @endif
+
             <form method="POST" action="{{ route('login.authenticate') }}">
                 @csrf
                 <label for="username">Username</label>

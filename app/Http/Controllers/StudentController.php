@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Degree;
 use App\Models\Student;
-use App\Models\UserAccounts;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -33,11 +32,9 @@ class StudentController extends Controller
     public function create()
     {
         $degrees = Degree::orderBy('degree_title')->get();
-        $userAccounts = UserAccounts::orderBy('username')->get();
 
         return view('add_student')
-            ->with('degrees', $degrees)
-            ->with('userAccounts', $userAccounts);
+            ->with('degrees', $degrees);
     }
 
     public function store(Request $request)
@@ -48,7 +45,6 @@ class StudentController extends Controller
             'mname' => 'nullable|min:2',
             'contactno' => 'required|digits:11',
             'degree_id' => 'required|exists:degrees,id',
-            'user_account_id' => 'nullable|exists:user_accounts,id',
             'email' => 'required|email|unique:students,email|unique:user_accounts,email',
             'username' => 'required|unique:user_accounts,username',
             'password' => 'required|min:8|confirmed',
@@ -87,11 +83,17 @@ class StudentController extends Controller
 
         $students = Student::with(['degree', 'userAccount'])->paginate(2);
 
-        return response()->json([
+        $response = [
             'message' => 'Student saved successfully.',
             'html' => view('partials.students-table', compact('students'))->render(),
             'student' => $student->load(['degree', 'userAccount']),
-        ]);
+        ];
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json($response);
+        }
+
+        return redirect()->route('student.index')->with('success', $response['message']);
     }
 
     public function show(Request $request, string $id)
@@ -108,12 +110,10 @@ class StudentController extends Controller
     {
         $student = Student::findOrFail($id);
         $degrees = Degree::orderBy('degree_title')->get();
-        $userAccounts = UserAccounts::orderBy('username')->get();
 
         return view('edit_student')
             ->with('student', $student)
-            ->with('degrees', $degrees)
-            ->with('userAccounts', $userAccounts);
+            ->with('degrees', $degrees);
     }
 
     public function update(Request $request, string $id)
@@ -133,7 +133,6 @@ class StudentController extends Controller
             ],
             'contactno' => 'required|string|max:255',
             'degree_id' => 'nullable|exists:degrees,id',
-            'user_account_id' => 'nullable|exists:user_accounts,id',
         ]);
 
         if ($validator->fails()) {
@@ -147,7 +146,6 @@ class StudentController extends Controller
             'email' => $request->input('email'),
             'contactno' => $request->input('contactno'),
             'degree_id' => $request->input('degree_id'),
-            'user_account_id' => $request->input('user_account_id'),
         ]);
 
         if ($student->userAccount) {
@@ -167,11 +165,17 @@ class StudentController extends Controller
 
         $students = Student::with(['degree', 'userAccount'])->paginate(2);
 
-        return response()->json([
+        $response = [
             'message' => 'Student updated successfully.',
             'html' => view('partials.students-table', compact('students'))->render(),
             'studentDetailsHtml' => view('partials.student-details', ['student' => $student->fresh(['degree', 'userAccount'])])->render(),
-        ]);
+        ];
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json($response);
+        }
+
+        return redirect()->route('student.index')->with('success', $response['message']);
     }
 
     public function destroy(Request $request, string $id)
@@ -195,9 +199,15 @@ class StudentController extends Controller
 
         $students = Student::with(['degree', 'userAccount'])->paginate(2);
 
-        return response()->json([
+        $response = [
             'message' => 'Student deleted successfully.',
             'html' => view('partials.students-table', compact('students'))->render(),
-        ]);
+        ];
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json($response);
+        }
+
+        return redirect()->route('student.index')->with('success', $response['message']);
     }
 }

@@ -528,6 +528,8 @@
 
                 <div class="nav-links">
                     <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Home</a>
+                    <a href="{{ route('user.profile') }}" class="{{ request()->routeIs('user.profile') ? 'active' : '' }}">Profile</a>
+                    <a href="{{ route('student.course') }}" class="{{ request()->routeIs('student.course') ? 'active' : '' }}">Courses</a>
                     @if (($userAccount['role'] ?? null) === 'admin')
                         <a href="{{ route('student.index') }}" class="{{ request()->routeIs('student.*') ? 'active' : '' }}">Students</a>
                         <a href="{{ route('teacher.index') }}" class="{{ request()->routeIs('teacher.*') ? 'active' : '' }}">Teachers</a>

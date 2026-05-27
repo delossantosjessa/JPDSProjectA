@@ -124,9 +124,10 @@ class UserController extends Controller
 
     public function showChangePasswordForm(Request $request)
     {
-        $pendingUserId = $request->query('user');
+        $sessionUser = $request->session()->get('user_account');
+        $pendingUserId = (int) $request->query('user');
 
-        if (!$pendingUserId) {
+        if (!$sessionUser || !$pendingUserId || (int) ($sessionUser['id'] ?? 0) !== $pendingUserId) {
             return redirect('/');
         }
 
@@ -145,9 +146,10 @@ class UserController extends Controller
 
     public function updatePassword(Request $request)
     {
-        $pendingUserId = $request->input('user_id');
+        $sessionUser = $request->session()->get('user_account');
+        $pendingUserId = (int) $request->input('user_id');
 
-        if (!$pendingUserId) {
+        if (!$sessionUser || !$pendingUserId || (int) ($sessionUser['id'] ?? 0) !== $pendingUserId) {
             return redirect('/');
         }
 
