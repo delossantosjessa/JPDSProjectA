@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Degree;
 use App\Models\Student;
+use App\Models\UserAccounts;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -71,15 +72,7 @@ class StudentController extends Controller
             'user_account_id' => $user->id,
         ]);
 
-        
-        $msg = "New student added!";
-        Log::info($msg);
-        Log::notice($msg);
-        Log::warning($msg);
-        Log::error($msg);
-        Log::emergency($msg);
-        Log::alert($msg);
-        Log::critical($msg);
+        Log::info('New student added.', ['student_id' => $student->id, 'user_account_id' => $user->id]);
 
         $students = Student::with(['degree', 'userAccount'])->paginate(2);
 
@@ -154,14 +147,7 @@ class StudentController extends Controller
             ]);
         }
 
-        $msg = "Student updated!";
-        Log::info($msg);
-        Log::notice($msg);
-        Log::warning($msg);
-        Log::error($msg);
-        Log::emergency($msg);
-        Log::alert($msg);
-        Log::critical($msg);
+        Log::info('Student updated.', ['student_id' => $student->id]);
 
         $students = Student::with(['degree', 'userAccount'])->paginate(2);
 
@@ -188,14 +174,7 @@ class StudentController extends Controller
 
         $student->delete();
 
-        $msg = "Student deleted!";
-        Log::info($msg);
-        Log::notice($msg);
-        Log::warning($msg);
-        Log::error($msg);
-        Log::emergency($msg);
-        Log::alert($msg);
-        Log::critical($msg);
+        Log::info('Student deleted.', ['student_id' => $student->id]);
 
         $students = Student::with(['degree', 'userAccount'])->paginate(2);
 

@@ -25,6 +25,17 @@ function extractErrors(xhr) {
         return Object.values(xhr.responseJSON.errors).flat();
     }
 
+    if (xhr.responseJSON && xhr.responseJSON.message) {
+        return [xhr.responseJSON.message];
+    }
+
+    if (xhr.responseText) {
+        const htmlMessage = xhr.responseText.match(/<title>(.*?)<\/title>/i);
+        if (htmlMessage && htmlMessage[1]) {
+            return [htmlMessage[1]];
+        }
+    }
+
     return ['An unexpected error occurred.'];
 }
 
