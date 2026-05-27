@@ -578,6 +578,6 @@
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="{{ asset('app.js') }}"></script>
+    <script src="{{ secure_asset('app.js') }}"></script>
 </body>
 </html>
